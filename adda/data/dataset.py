@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 import tensorflow as tf
-from tensorflow.contrib.learn.python.learn.dataframe.queues.feeding_queue_runner import FeedingQueueRunner
+from tensorflow.python.estimator.inputs.queues import feeding_queue_runner as FeedingQueueRunner
 
 
 class DatasetGroup(object):
@@ -63,7 +63,7 @@ class ImageDataset(object):
             shapes = [self.image_shape, self.label_shape]
         queue = tf.FIFOQueue(capacity, [tf.float32, tf.int32], shapes=shapes)
         enqueue_op = queue.enqueue([im, label])
-        fqr = FeedingQueueRunner(queue, [enqueue_op],
+        fqr = FeedingQueueRunner._FeedingQueueRunner(queue, [enqueue_op],
                                  feed_fns=[self.feed(im, label).__next__])
         tf.train.add_queue_runner(fqr)
         return queue.dequeue()
